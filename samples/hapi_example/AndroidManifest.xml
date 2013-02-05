@@ -35,17 +35,31 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="intent" android:host="org.medhelp.testapp"/>
-                
+
+                <data
+                    android:host="org.medhelp.testapp"
+                    android:scheme="intent" />
             </intent-filter>
         </activity>
-        <activity android:name="org.medhelp.hapiclient.alpha.activity.HCLoginLandingActivity"
+        <!--
+        activity android:name="org.medhelp.hapiclient.alpha.activity.HCLoginLandingActivity"
             android:exported="false" >
             <intent-filter>
                 <action android:name="org.medhelp.testapp.POST_LOGIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity
+        -->
+        <activity
+            android:name="org.medhelp.hapiclient.alpha.activity.HCEditWeightActivity"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="org.medhelp.testapp.POST_LOGIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
+        <activity android:name="org.medhelp.hapiclient.alpha.activity.HCWeightListActivity" />
     </application>
 
 </manifest>

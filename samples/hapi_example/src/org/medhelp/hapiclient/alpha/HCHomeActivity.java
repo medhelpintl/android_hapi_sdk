@@ -1,8 +1,10 @@
 package org.medhelp.hapiclient.alpha;
 
-import org.medhelp.hapi.aplha.account.MHLoginClient;
+import org.medhelp.hapi.alpha.account.MHLoginClient;
+import org.medhelp.hapiclient.alpha.activity.HCEditWeightActivity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +30,7 @@ public class HCHomeActivity extends Activity implements OnClickListener {
 			MHLoginClient.login(this, REDIRECT_URI, CLIENT_ID, CLIENT_SECRET);
 			break;
 		case R.id.btn_app:
+			startActivity(new Intent(this, HCEditWeightActivity.class));
 			break;
 		}
 	}
