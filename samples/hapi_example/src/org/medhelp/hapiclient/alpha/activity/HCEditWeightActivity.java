@@ -3,6 +3,7 @@ package org.medhelp.hapiclient.alpha.activity;
 import java.util.Date;
 
 import org.medhelp.hapi.alpha.account.MHHealthData;
+import org.medhelp.hapi.alpha.http.MHNetworkException;
 import org.medhelp.hapiclient.alpha.R;
 
 import android.app.Activity;
@@ -80,7 +81,12 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		weightData.setValue(String.valueOf(weight));
 
 		// Save the health data object.
-		weightData.save(getApplicationContext());
+		try {
+			weightData.save(getApplicationContext());
+		} catch (MHNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void onClickUpdate() {
