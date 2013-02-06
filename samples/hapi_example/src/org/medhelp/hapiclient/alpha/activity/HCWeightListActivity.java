@@ -47,10 +47,10 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 	}
 
 	private void onClickGetWeights() {
-		new LoadExercisesTask().execute("");
+		new LoadWeightsTask().execute("");
 	}
 
-	private class LoadExercisesTask extends AsyncTask<String, Integer, String> {
+	private class LoadWeightsTask extends AsyncTask<String, Integer, String> {
 
 		@Override
 		protected void onPreExecute() {

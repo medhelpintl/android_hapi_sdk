@@ -2,6 +2,8 @@ package org.medhelp.hapiclient.alpha.activity;
 
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.medhelp.hapi.alpha.account.MHApiHandler;
 import org.medhelp.hapi.alpha.account.MHHealthData;
 import org.medhelp.hapi.alpha.http.MHNetworkException;
 import org.medhelp.hapiclient.alpha.R;
@@ -10,6 +12,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -81,12 +84,7 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		weightData.setValue(String.valueOf(weight));
 
 		// Save the health data object.
-		try {
-			weightData.save(getApplicationContext());
-		} catch (MHNetworkException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new SaveHealthDataTask().execute(weightData);
 	}
 
 	private void onClickUpdate() {
@@ -95,6 +93,39 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 
 	private void onClickDelete() {
 		new RequestTask().execute("");
+	}
+	
+	private class SaveHealthDataTask extends AsyncTask<MHHealthData, Integer, String> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected String doInBackground(MHHealthData... params) {
+			String response = null;
+			try {
+				response = params[0].save(getApplicationContext());
+				Log.v(tag, "response " + response);
+			} catch (MHNetworkException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			Log.v(tag, "result : " + result);
+		}
+
+		@Override
+		protected void onCancelled() {
+			super.onCancelled();
+		}
 	}
 
 	private class RequestTask extends
