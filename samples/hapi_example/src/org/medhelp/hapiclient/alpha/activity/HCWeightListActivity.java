@@ -3,8 +3,9 @@ package org.medhelp.hapiclient.alpha.activity;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
-import org.medhelp.hapi.alpha.account.MHApiHandler;
+import org.medhelp.hapi.alpha.account.MHApiClient;
 import org.medhelp.hapi.alpha.http.MHNetworkException;
+import org.medhelp.hapi.alpha.model.MHResult;
 import org.medhelp.hapiclient.alpha.R;
 
 import android.app.Activity;
@@ -50,7 +51,7 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 		new LoadWeightsTask().execute("");
 	}
 
-	private class LoadWeightsTask extends AsyncTask<String, Integer, String> {
+	private class LoadWeightsTask extends AsyncTask<String, Integer, MHResult> {
 
 		@Override
 		protected void onPreExecute() {
@@ -59,24 +60,29 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 		}
 
 		@Override
-		protected String doInBackground(String... params) {
-			String response1 = null;
+		protected MHResult doInBackground(String... params) {
+			MHResult result = null;
 			try {
-				response1 = MHApiHandler.read(getApplicationContext(),
-						"2013-01-01", "2013-01-31", new JSONArray().put("Weight"));
-//				String response2 = MHApiHandler.read(getApplicationContext(),
-//						new JSONArray().put("Weight"));
-//				Log.v(tag, "response2 : " + response2);
+				result = MHApiClient.read(getApplicationContext(),
+						"2013-01-01", "2013-02-07", new JSONArray().put("Weight"));
+
+				Log.v(tag, "result = null ? " + (result == null));
+				Log.v(tag, "getDataList() = null ? " + (result.getDataList() == null) );
+				Log.v(tag, "result.getDataList().size : " + result.getDataList().size());
+				Log.v(tag, "result.getDataList().get(0).toJSONObject() " + result.getDataList().get(0).toJSONObject());
+				Log.v(tag, "result " + result.getDataList().size());
+				Log.v(tag, "result " + result.getDataList().get(0).toJSONObject().toString());
 			} catch (MHNetworkException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.v(tag, "MHNetworkException ");
+//				e.printStackTrace();
 			}
 
-			return response1;
+			return result;
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(MHResult result) {
 			super.onPostExecute(result);
 			Log.v(tag, "result : " + result);
 			mProgress.setVisibility(View.GONE);

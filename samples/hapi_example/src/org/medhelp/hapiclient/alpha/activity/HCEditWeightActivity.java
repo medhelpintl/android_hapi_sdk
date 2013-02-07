@@ -1,9 +1,9 @@
 package org.medhelp.hapiclient.alpha.activity;
 
+import java.util.ArrayList;
 import java.util.Date;
 
-import org.json.JSONArray;
-import org.medhelp.hapi.alpha.account.MHApiHandler;
+import org.medhelp.hapi.alpha.account.MHApiClient;
 import org.medhelp.hapi.alpha.account.MHHealthData;
 import org.medhelp.hapi.alpha.http.MHNetworkException;
 import org.medhelp.hapiclient.alpha.R;
@@ -26,6 +26,8 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 
 	EditText mETCreateWeight;
 	EditText mETUpdateWeight;
+	
+	MHHealthData healthData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +72,35 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		weight = Float.parseFloat("0"
 				+ mETCreateWeight.getText().toString().trim());
 
-		long currentTime = System.currentTimeMillis();
+		long currentTime = System.currentTimeMillis() / 1000L;
+
+		// Create a new healthdata object
+		healthData = new MHHealthData(getApplicationContext());
+
+		// update the fields
+		healthData.setClientId(1);
+		healthData.setCreatedAt(currentTime);
+		healthData.setDate(new Date());
+		healthData.setFieldName("Weight");
+		healthData.setUpdatedAt(currentTime);
+		healthData.setValue(String.valueOf(weight));
+
+		// Save the health data object.
+		new SaveHealthDataTask().execute(healthData);
+	}
+
+	private void onClickUpdate() {
+		float weight = 0;
+		weight = Float.parseFloat("0"
+				+ mETCreateWeight.getText().toString().trim());
+
+		long currentTime = System.currentTimeMillis() / 1000L;
 
 		// Create a new healthdata object
 		MHHealthData weightData = new MHHealthData(getApplicationContext());
 
 		// update the fields
+		weightData.setMedhelpId("8a2b9b9052d501309b0e1231392274ec");
 		weightData.setClientId(1);
 		weightData.setCreatedAt(currentTime);
 		weightData.setDate(new Date());
@@ -87,12 +112,26 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		new SaveHealthDataTask().execute(weightData);
 	}
 
-	private void onClickUpdate() {
-
-	}
-
 	private void onClickDelete() {
-		new RequestTask().execute("");
+		float weight = 0;
+		weight = Float.parseFloat("0"
+				+ mETCreateWeight.getText().toString().trim());
+
+		long currentTime = System.currentTimeMillis() / 1000L;
+
+		// Create a new healthdata object
+		MHHealthData weightData = new MHHealthData(getApplicationContext());
+
+		// update the fields
+		weightData.setMedhelpId("8a2b9b9052d501309b0e1231392274ec");
+		weightData.setClientId(1);
+		weightData.setCreatedAt(currentTime);
+		weightData.setDate(new Date());
+		weightData.setFieldName("Weight");
+		weightData.setUpdatedAt(currentTime);
+		weightData.setValue(String.valueOf(weight));
+		
+		new DeleteTask().execute(weightData);
 	}
 	
 	private class SaveHealthDataTask extends AsyncTask<MHHealthData, Integer, String> {
@@ -128,12 +167,23 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private class RequestTask extends
-			AsyncTask<String, Integer, String> {
+	private class DeleteTask extends
+			AsyncTask<MHHealthData, Integer, String> {
 
 		@Override
-		protected String doInBackground(String... params) {
-			return null;
+		protected String doInBackground(MHHealthData... params) {
+			String response = null;
+			try {
+				ArrayList<MHHealthData> dataList = new ArrayList<MHHealthData>();
+				dataList.add(params[0]);
+				MHApiClient.delete(getApplicationContext(), dataList);
+				Log.v(tag, "response " + response);
+			} catch (MHNetworkException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return response;
 		}
 
 		@Override
