@@ -1,11 +1,14 @@
 package org.medhelp.hapiclient.alpha.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.medhelp.hapi.alpha.account.MHApiClient;
+import org.medhelp.hapi.alpha.account.MHHealthData;
 import org.medhelp.hapi.alpha.http.MHNetworkException;
 import org.medhelp.hapi.alpha.model.MHResult;
+import org.medhelp.hapi.alpha.util.MHDateUtil;
 import org.medhelp.hapiclient.alpha.R;
 
 import android.app.Activity;
@@ -14,27 +17,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HCWeightListActivity extends Activity implements OnClickListener {
 	private static final String tag = "HAPI HCEditWeightActivity : ";
 
 	ArrayList<String> values = null;
 
-	TextView mTVLastWeight;
-	ListView mLVWeights;
+	TextView mTVWeights;
 	ProgressBar mProgress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.weight_list);
+		setContentView(R.layout.weights);
 
 		findViewById(R.id.btn_get_weights).setOnClickListener(this);
-
-		mLVWeights = (ListView) findViewById(android.R.id.list);
+		mTVWeights = (TextView) findViewById(R.id.tv_weights);
 		mProgress = (ProgressBar) findViewById(R.id.pb_progress);
 	}
 
@@ -65,17 +66,10 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 			try {
 				result = MHApiClient.read(getApplicationContext(),
 						"2013-01-01", "2013-02-07", new JSONArray().put("Weight"));
-
-				Log.v(tag, "result = null ? " + (result == null));
-				Log.v(tag, "getDataList() = null ? " + (result.getDataList() == null) );
-				Log.v(tag, "result.getDataList().size : " + result.getDataList().size());
-				Log.v(tag, "result.getDataList().get(0).toJSONObject() " + result.getDataList().get(0).toJSONObject());
-				Log.v(tag, "result " + result.getDataList().size());
-				Log.v(tag, "result " + result.getDataList().get(0).toJSONObject().toString());
 			} catch (MHNetworkException e) {
 				// TODO Auto-generated catch block
 				Log.v(tag, "MHNetworkException ");
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 
 			return result;
@@ -84,7 +78,7 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onPostExecute(MHResult result) {
 			super.onPostExecute(result);
-			Log.v(tag, "result : " + result);
+			handleResult(result);
 			mProgress.setVisibility(View.GONE);
 		}
 
@@ -93,10 +87,36 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 			super.onCancelled();
 			mProgress.setVisibility(View.GONE);
 		}
+		
+		private void handleResult(MHResult result) {
+			Log.v(tag, "\n\n\n handleResult");
+			if (result == null) {
+				Log.v(tag, "MHResult is null");
+				Toast.makeText(HCWeightListActivity.this, "MHResult is null", Toast.LENGTH_LONG).show();
+				return;
+			}
+			if (result.getDataList() == null) {
+				Log.v(tag, "DataList in MHResult is null");
+				Toast.makeText(HCWeightListActivity.this, "DataList in MHResult is null", Toast.LENGTH_LONG).show();
+				return;
+			}
+			if (result.getDataList().size() == 0) {
+				Log.v(tag, "DataList in MHResult has no HealthData items");
+				Toast.makeText(HCWeightListActivity.this, "DataList in MHResult has no HealthData items", Toast.LENGTH_LONG).show();
+				return;
+			}
+			loadWeights(result);
+		}
 	}
 
-	private ArrayList<String> loadExercises() {
-		return null;
+	private void loadWeights(MHResult result) {
+		List<MHHealthData> weights = result.getDataList();
+		
+		String weightsDisplay = "";
+		for (MHHealthData data : weights) {
+			weightsDisplay += "\n\n" + MHDateUtil.formatDate(data.getDate(), MHDateUtil.format.YYYY_MM_DD) + "  :  " + data.getValue();
+		}
+		mTVWeights.setText(weightsDisplay);
 	}
 
 }
