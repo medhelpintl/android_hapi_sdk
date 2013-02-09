@@ -79,7 +79,6 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		healthData = new MHHealthData(getApplicationContext());
 
 		// update the fields
-		healthData.setClientId(1);
 		healthData.setCreatedAt(currentTime);
 		healthData.setDate(new Date());
 		healthData.setFieldName("Weight");

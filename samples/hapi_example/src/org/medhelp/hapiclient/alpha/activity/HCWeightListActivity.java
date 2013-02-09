@@ -65,7 +65,7 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 			MHResult result = null;
 			try {
 				result = MHApiClient.read(getApplicationContext(),
-						"2013-01-01", "2013-02-07", new JSONArray().put("Weight"));
+						"2013-01-01", "2013-02-09", new JSONArray().put("Weight"));
 			} catch (MHNetworkException e) {
 				// TODO Auto-generated catch block
 				Log.v(tag, "MHNetworkException ");
