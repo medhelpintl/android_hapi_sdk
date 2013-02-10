@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.medhelp.hapi.alpha.account.MHApiClient;
 import org.medhelp.hapi.alpha.account.MHHealthData;
+import org.medhelp.hapi.alpha.account.MHQuery;
 import org.medhelp.hapi.alpha.http.MHNetworkException;
 import org.medhelp.hapi.alpha.model.MHResponse;
 import org.medhelp.hapiclient.alpha.R;
@@ -46,6 +47,14 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		findViewById(R.id.btn_delete_last_weight).setOnClickListener(this);
 		findViewById(R.id.btn_weight_list).setOnClickListener(this);
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// Save the health data object.
+		new LatestWeightTask().execute();
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -82,7 +91,6 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		healthData.setCreatedAt(currentTime);
 		healthData.setDate(new Date());
 		healthData.setFieldName("Weight");
-		healthData.setUpdatedAt(currentTime);
 		healthData.setValue(String.valueOf(weight));
 
 		// Save the health data object.
@@ -90,12 +98,15 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 	}
 
 	private void onClickUpdate() {
+		if (healthData == null) {
+			return;
+		}
+		
 		float weight = 0;
-		weight = Float.parseFloat("0"
-				+ mETCreateWeight.getText().toString().trim());
+		weight = Float.parseFloat("0" + mETUpdateWeight.getText().toString().trim());
 
-		long currentTime = System.currentTimeMillis() / 1000L;
-		healthData.setUpdatedAt(currentTime);
+		Log.v(tag, "New Weight " + weight);
+		
 		healthData.setValue(String.valueOf(weight));
 
 		// Save the health data object.
@@ -135,6 +146,9 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		protected void onPostExecute(MHResponse result) {
 			super.onPostExecute(result);
 			Log.v(tag, "result : " + result);
+			
+			// Save the health data object.
+			new LatestWeightTask().execute();
 		}
 	}
 
@@ -149,7 +163,6 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 				response = MHApiClient.delete(getApplicationContext(), dataList);
 				Log.v(tag, "response " + response);
 			} catch (MHNetworkException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -160,57 +173,33 @@ public class HCEditWeightActivity extends Activity implements OnClickListener {
 		protected void onPostExecute(MHResponse result) {
 			//TODO Handle the result
 			super.onPostExecute(result);
+
+			// Save the health data object.
+			new LatestWeightTask().execute();
 		}
 
 	}
-
-	/*
-	 * OLD CODE NEED IGNORE IT FOR NOW or use it for individual tests of update
-	 * and delete when you are creating the object with an existing medhelp_id
-	 */
-	private void onClickUpdateOLD() {
-		float weight = 0;
-		weight = Float.parseFloat("0"
-				+ mETCreateWeight.getText().toString().trim());
-
-		long currentTime = System.currentTimeMillis() / 1000L;
-
-		// Create a new healthdata object
-		MHHealthData weightData = new MHHealthData(getApplicationContext());
-
-		// update the fields
-		weightData.setMedhelpId("8a2b9b9052d501309b0e1231392274ec");
-		weightData.setClientId(1);
-		weightData.setCreatedAt(currentTime);
-		weightData.setDate(new Date());
-		weightData.setFieldName("Weight");
-		weightData.setUpdatedAt(currentTime);
-		weightData.setValue(String.valueOf(weight));
-
-		// Save the health data object.
-		new SaveHealthDataTask().execute(weightData);
-	}
-
-	private void onClickDeleteOLD() {
-		float weight = 0;
-		weight = Float.parseFloat("0"
-				+ mETCreateWeight.getText().toString().trim());
-
-		long currentTime = System.currentTimeMillis() / 1000L;
-
-		// Create a new healthdata object
-		MHHealthData weightData = new MHHealthData(getApplicationContext());
-
-		// update the fields
-		weightData.setMedhelpId("8a2b9b9052d501309b0e1231392274ec");
-		weightData.setClientId(1);
-		weightData.setCreatedAt(currentTime);
-		weightData.setDate(new Date());
-		weightData.setFieldName("Weight");
-		weightData.setUpdatedAt(currentTime);
-		weightData.setValue(String.valueOf(weight));
-
-		new DeleteTask().execute(weightData);
+	
+	private class LatestWeightTask extends AsyncTask<MHHealthData, Integer, MHHealthData> {
+		
+		@Override
+		protected MHHealthData doInBackground(MHHealthData... params) {
+			try {
+				return MHQuery.getLatestUserData(getApplicationContext(), "Weight");
+			} catch (MHNetworkException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(MHHealthData result) {
+			super.onPostExecute(result);
+			
+			healthData = result;
+			mTVLastWeight.setText("" + result.getValue());
+		}
+		
 	}
 
 }

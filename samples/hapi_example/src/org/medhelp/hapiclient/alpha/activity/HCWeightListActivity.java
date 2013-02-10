@@ -1,13 +1,12 @@
 package org.medhelp.hapiclient.alpha.activity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.medhelp.hapi.alpha.account.MHApiClient;
 import org.medhelp.hapi.alpha.account.MHHealthData;
+import org.medhelp.hapi.alpha.account.MHQuery;
 import org.medhelp.hapi.alpha.http.MHNetworkException;
-import org.medhelp.hapi.alpha.model.MHResult;
 import org.medhelp.hapi.alpha.util.MHDateUtil;
 import org.medhelp.hapiclient.alpha.R;
 
@@ -52,7 +51,7 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 		new LoadWeightsTask().execute("");
 	}
 
-	private class LoadWeightsTask extends AsyncTask<String, Integer, MHResult> {
+	private class LoadWeightsTask extends AsyncTask<String, Integer, List<MHHealthData>> {
 
 		@Override
 		protected void onPreExecute() {
@@ -60,25 +59,32 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 			mProgress.setVisibility(View.VISIBLE);
 		}
 
-		@Override
-		protected MHResult doInBackground(String... params) {
-			MHResult result = null;
+		@Override	
+		protected List<MHHealthData> doInBackground(String... params) {
+			List<MHHealthData> user_data = new ArrayList<MHHealthData>();
 			try {
-				result = MHApiClient.read(getApplicationContext(),
-						"2013-01-01", "2013-02-09", new JSONArray().put("Weight"));
+				Date now = new Date();
+				Date startDate = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+				Date endDate = now;
+				List<String> fieldNames = new ArrayList<String>();
+				fieldNames.add("Weight");
+				
+				Log.v(tag, "Start: " + startDate + " End: " + endDate);
+				
+				user_data = MHQuery.queryUserDataForFields(getApplicationContext(), startDate, endDate, fieldNames);
 			} catch (MHNetworkException e) {
 				// TODO Auto-generated catch block
 				Log.v(tag, "MHNetworkException ");
 				e.printStackTrace();
 			}
 
-			return result;
+			return user_data;
 		}
 
 		@Override
-		protected void onPostExecute(MHResult result) {
-			super.onPostExecute(result);
-			handleResult(result);
+		protected void onPostExecute(List<MHHealthData> user_data) {
+			super.onPostExecute(user_data);
+			handleResult(user_data);
 			mProgress.setVisibility(View.GONE);
 		}
 
@@ -88,19 +94,19 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 			mProgress.setVisibility(View.GONE);
 		}
 		
-		private void handleResult(MHResult result) {
+		private void handleResult(List<MHHealthData> result) {
 			Log.v(tag, "\n\n\n handleResult");
 			if (result == null) {
 				Log.v(tag, "MHResult is null");
 				Toast.makeText(HCWeightListActivity.this, "MHResult is null", Toast.LENGTH_LONG).show();
 				return;
 			}
-			if (result.getDataList() == null) {
+			if (result == null) {
 				Log.v(tag, "DataList in MHResult is null");
 				Toast.makeText(HCWeightListActivity.this, "DataList in MHResult is null", Toast.LENGTH_LONG).show();
 				return;
 			}
-			if (result.getDataList().size() == 0) {
+			if (result.size() == 0) {
 				Log.v(tag, "DataList in MHResult has no HealthData items");
 				Toast.makeText(HCWeightListActivity.this, "DataList in MHResult has no HealthData items", Toast.LENGTH_LONG).show();
 				return;
@@ -109,8 +115,8 @@ public class HCWeightListActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private void loadWeights(MHResult result) {
-		List<MHHealthData> weights = result.getDataList();
+	private void loadWeights(List<MHHealthData> result) {
+		List<MHHealthData> weights = result;
 		
 		String weightsDisplay = "";
 		for (MHHealthData data : weights) {
