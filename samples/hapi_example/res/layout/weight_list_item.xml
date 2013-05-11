@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+
+    <ImageView
+        android:id="@+id/iv_delete_state"
+        android:layout_width="6dp"
+        android:layout_height="48dp" />
+    
+    <TextView
+        android:id="@+id/tv_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#0D4D85"
+        android:textSize="14sp"
+        android:layout_toRightOf="@id/iv_delete_state"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="12dp"  />
+    
+    <TextView
+        android:id="@+id/tv_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/bg_undeleted_state_bottom"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="16dp" />
+    
+    <TextView
+        android:id="@+id/tv_medhelpId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/app_theme_text"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:layout_toRightOf="@id/iv_delete_state"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:paddingBottom="6dp" />
+
+</RelativeLayout>

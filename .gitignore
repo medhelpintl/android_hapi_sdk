@@ -17,8 +17,7 @@ local.properties
 default.properties
 
 # Eclipse project files
-.project
-project.properties
+.settings
 
 #Log files
 *.log

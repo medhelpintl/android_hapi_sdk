@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.medhelp.hapiclient.alpha"
+    package="org.medhelp.weight"
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="7"
-        android:targetSdkVersion="16" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="org.medhelp.hapiclient.alpha.HCHomeActivity"
+            android:name="org.medhelp.weight.HomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,41 +25,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
-            android:name="org.medhelp.hapiclient.alpha.account.HCLoginHandlerActivity"
+            android:name="org.medhelp.weight.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="org.medhelp.testapp"
-                    android:scheme="intent" />
-            </intent-filter>
+              <action android:name="android.intent.action.VIEW" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <category android:name="android.intent.category.BROWSABLE" />
+              <data android:host="org.medhelp.testapp" android:scheme="intent" />
+           </intent-filter>
         </activity>
-        <!--
-        activity android:name="org.medhelp.hapiclient.alpha.activity.HCLoginLandingActivity"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="org.medhelp.testapp.POST_LOGIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity
-        -->
+        
         <activity
-            android:name="org.medhelp.hapiclient.alpha.activity.HCEditWeightActivity"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="org.medhelp.testapp.POST_LOGIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="org.medhelp.hapiclient.alpha.activity.HCWeightListActivity" />
+            android:name="org.medhelp.weight.WeightActivity" />
+        <activity
+            android:name="org.medhelp.weight.WeightHistoryActivity" />
     </application>
 
 </manifest>

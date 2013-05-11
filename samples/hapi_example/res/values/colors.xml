@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="theme_color">#6EB4E0</color>
+
+    <color name="btn_default_normal">#2E97D9</color>
+    <color name="btn_default_pressed">#006FB5</color>
+    <color name="btn_default_focused">#0684D4</color>
+    <color name="btn_default_disabled">#92A6B3</color>
+    
+    
+    <color name="app_theme_text">#0471B5</color>
+    
+    <color name="bg_theme_top">@android:color/white</color>
+    <color name="bg_theme_bottom">#E1F2FC</color>
+    
+    <color name="bg_deleted_state_top">#F53D3D</color>
+    <color name="bg_deleted_state_bottom">#ED1515</color>
+    
+    <color name="bg_undeleted_state_top">#2FBD34</color>
+    <color name="bg_undeleted_state_bottom">#18AB1D</color>
+</resources>
